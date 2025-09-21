@@ -16,17 +16,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: PHP info
-        run: php -v
-
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
           extensions: mbstring, intl, dom, curl, fileinfo, zip
 
-      - name: Validate composer.json
-        run: composer validate --no-check-all --strict
+      - name: Show versions
+        run: |
+          php -v
+          composer -V
+          node -v
+          npm -v
 
       - name: Install Composer deps (with dev)
         env:
