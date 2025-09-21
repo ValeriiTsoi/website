@@ -35,3 +35,16 @@ jobs:
           mkdir -p tmp-empty
           rsync -azvvn -e "ssh -o StrictHostKeyChecking=no" \
             tmp-empty/ "${{ secrets.TEST_USER }}@${{ secrets.TEST_HOST }}:${{ secrets.TEST_PATH }}/"
+
+      - name: Validate required secrets
+        env:
+          TEST_USER: ${{ secrets.TEST_USER }}
+          TEST_HOST: ${{ secrets.TEST_HOST }}
+          TEST_PATH: ${{ secrets.TEST_PATH }}
+        run: |
+          set -e
+          for v in TEST_USER TEST_HOST TEST_PATH; do
+            if [ -z "${!v}" ]; then
+              echo " Missing secret: $v (define in Repo  Settings  Secrets  Actions)"; exit 1
+            fi
+          done
