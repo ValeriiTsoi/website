@@ -1,0 +1,35 @@
+/* -       */
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  padding: 3rem 1.25rem;
+  background: radial-gradient(1200px 600px at 20% -10%, rgba(59,130,246,0.14), transparent 40%),
+              radial-gradient(1000px 600px at 110% 20%, rgba(168,85,247,0.16), transparent 45%),
+              linear-gradient(180deg, rgba(255,255,255,0.80), rgba(255,255,255,0.65));
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.hero .orb {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.35;
+  animation: float 10s ease-in-out infinite alternate;
+}
+
+.hero .orb.one  { top: -60px; left: -60px;  background: #60a5fa; }
+.hero .orb.two  { bottom: -80px; right: -80px; background: #a78bfa; animation-delay: 1.5s; }
+
+@keyframes float {
+  from { transform: translateY(0) translateX(0); }
+  to   { transform: translateY(-12px) translateX(16px) scale(1.02); }
+}
+
+/*    */
+.slogan {
+  text-shadow: 0 1px 0 rgba(255,255,255,0.6);
+}
