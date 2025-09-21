@@ -17,7 +17,6 @@ jobs:
   deploy:
     runs-on: self-hosted
 
-    #  Secrets  (Repo  Settings  Secrets and variables  Actions  Secrets)
     env:
       TEST_USER: ${{ secrets.TEST_USER }}
       TEST_HOST: ${{ secrets.TEST_HOST }}
@@ -32,7 +31,7 @@ jobs:
           set -euo pipefail
           for v in TEST_USER TEST_HOST TEST_PATH; do
             if [ -z "${!v:-}" ]; then
-              echo " Missing $v (set it in Repo  Settings  Secrets and variables  Actions  Secrets)"; exit 1;
+              echo " Missing $v (set in Repo  Settings  Secrets  Actions)"; exit 1;
             fi
           done
           echo " Secrets present"
@@ -89,7 +88,7 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # :    SSH (  )
+      #  SSH ( )
       # - name: Test SSH to TEST (very verbose)
       #   run: |
       #     set -euxo pipefail
@@ -127,43 +126,47 @@ jobs:
             set -euxo pipefail
             cd "'"${TEST_PATH}"'"
 
-            #  .env    
+            # .env  heredoc,    YAML/SSH
             if [ ! -f .env ]; then
-              cat > .env <<ENV
-                APP_NAME=ValeriiTsoi
-                APP_ENV=production
-                APP_KEY=
-                APP_DEBUG=false
-                APP_URL=http://192.168.1.15
-                SESSION_DRIVER=file
-                CACHE_DRIVER=file
-                CACHE_STORE=file
-                QUEUE_CONNECTION=sync
-                DB_CONNECTION=sqlite
-              ENV
+              printf "%s\n" \
+                "APP_NAME=ValeriiTsoi" \
+                "APP_ENV=production" \
+                "APP_KEY=" \
+                "APP_DEBUG=false" \
+                "APP_URL=http://192.168.1.15" \
+                "SESSION_DRIVER=file" \
+                "CACHE_DRIVER=file" \
+                "CACHE_STORE=file" \
+                "QUEUE_CONNECTION=sync" \
+                "DB_CONNECTION=sqlite" > .env
             fi
 
-            #  APP_KEY   
+            # APP_KEY  
             if ! grep -q "^APP_KEY=" .env || [ -z "$(grep "^APP_KEY=" .env | cut -d= -f2)" ]; then
               php artisan key:generate --ansi
             fi
 
-            #      
+            #     
             grep -q "^SESSION_DRIVER=" .env && sed -i "s/^SESSION_DRIVER=.*/SESSION_DRIVER=file/" .env || echo "SESSION_DRIVER=file" >> .env
             grep -q "^CACHE_DRIVER="   .env && sed -i "s/^CACHE_DRIVER=.*/CACHE_DRIVER=file/"   .env || echo "CACHE_DRIVER=file"   >> .env
             grep -q "^CACHE_STORE="    .env && sed -i "s/^CACHE_STORE=.*/CACHE_STORE=file/"     .env || echo "CACHE_STORE=file"    >> .env
             grep -q "^QUEUE_CONNECTION=" .env && sed -i "s/^QUEUE_CONNECTION=.*/QUEUE_CONNECTION=sync/" .env || echo "QUEUE_CONNECTION=sync" >> .env
 
-            #  
+            #   SQLite,      
+            mkdir -p database
+            [ -f database/database.sqlite ] || touch database/database.sqlite
+            chmod 664 database/database.sqlite || true
+
+            # /
             php artisan optimize
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
             php artisan storage:link || true
 
-            # /SELinux ( sudo, )
+            #   ( ) SELinux-
             find storage -type d -exec chmod 775 {} \; || true
             find storage -type f -exec chmod 664 {} \; || true
             chmod -R ug+rw bootstrap/cache || true
-            command -v restorecon >/dev/null 2>&1 && restorecon -Rv storage bootstrap/cache || true
+            command -v restorecon >/dev/null 2>&1 && restorecon -Rv storage bootstrap/cache database || true
           '
