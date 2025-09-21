@@ -45,8 +45,11 @@ jobs:
       - name: Show tool versions on runner
         run: |
           set -x
-          which rsync || true
-          rsync --version || true
+          which php || true; php -v || true
+          which composer || true; composer -V || true
+          which node || true; node -v || true
+          which npm || true; npm -v || true
+          which rsync || true; rsync --version || true
           ssh -V || true
 
       - name: Add SSH key
@@ -79,7 +82,7 @@ jobs:
             --exclude "storage/" --exclude ".env" --exclude ".env.*" \
             ./ "${{ secrets.TEST_USER }}@${{ secrets.TEST_HOST }}:${{ secrets.TEST_PATH }}"
 
-      - name: Post-deploy
+      - name: Post-deploy (artisan + perms)
         run: |
           set -euxo pipefail
           ssh -o StrictHostKeyChecking=no "${{ secrets.TEST_USER }}@${{ secrets.TEST_HOST }}" bash -lc '
