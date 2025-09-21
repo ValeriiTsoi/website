@@ -2,7 +2,8 @@ name: Deploy to PROD (tsoy.eu)
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -15,64 +16,153 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    env:
+      PROD_USER: ${{ secrets.PROD_USER }}
+      PROD_HOST: ${{ secrets.PROD_HOST }}
+      PROD_PATH: ${{ secrets.PROD_PATH }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup PHP
+      - name: Validate required secrets
+        run: |
+          set -euo pipefail
+          for v in PROD_USER PROD_HOST PROD_PATH; do
+            if [ -z "${!v:-}" ]; then
+              echo " Missing $v (set in Repo  Settings  Secrets  Actions)"; exit 1;
+            fi
+          done
+          echo " Secrets present"
+
+      - name: Setup PHP 8.3 + Composer (GitHub-hosted)
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
           extensions: mbstring, intl, dom, curl, fileinfo, zip
+          tools: composer:v2
 
-      - name: Install Composer deps (no-dev)
-        env:
-          COMPOSER_MEMORY_LIMIT: -1
-        run: composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+      - name: Show versions
+        run: |
+          php -v
+          composer -V
+          node -v || true
+          npm -v || true
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Install Node deps
-        run: npm ci || npm install --no-audit --no-fund
+      - name: Composer install (no-dev)
+        env:
+          COMPOSER_MEMORY_LIMIT: -1
+        run: |
+          set -euxo pipefail
+          composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+          test -d vendor
+
+      - name: Node install
+        run: |
+          set -euxo pipefail
+          npm ci || npm install --no-audit --no-fund
 
       - name: Build assets
-        run: npm run build --if-present
+        run: |
+          set -euxo pipefail
+          npm run build --if-present
 
-      - name: Add SSH key
+      - name: Verify Vite manifest exists
+        run: |
+          set -euxo pipefail
+          test -f public/build/manifest.json || { echo " No Vite manifest (did npm run build?)"; exit 1; }
+          echo " manifest.json present"
+
+      - name: Add SSH key (for rsync/ssh)
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          #     SSH_PRIVATE_KEY_PROD   
+
+      # :  SSH
+      # - name: Test SSH to PROD (very verbose)
+      #   run: |
+      #     set -euxo pipefail
+      #     ssh -vvv -o BatchMode=yes -o StrictHostKeyChecking=no "${PROD_USER}@${PROD_HOST}" 'echo SSH_OK'
+
+      - name: Ensure target path exists
+        run: |
+          set -euxo pipefail
+          ssh -o StrictHostKeyChecking=no "${PROD_USER}@${PROD_HOST}" "mkdir -p '${PROD_PATH}'"
 
       - name: Rsync to PROD
         run: |
+          set -euxo pipefail
           rsync -az --delete \
+            -e "ssh -o StrictHostKeyChecking=no" \
             --exclude ".git" --exclude ".github" \
             --exclude "node_modules" --exclude "vendor/bin" \
             --exclude "storage/" --exclude ".env" --exclude ".env.*" \
-            ./ "${{ secrets.PROD_USER }}@${{ secrets.PROD_HOST }}:${{ secrets.PROD_PATH }}"
+            "$GITHUB_WORKSPACE/." "${PROD_USER}@${PROD_HOST}:${PROD_PATH}"
 
-      - name: Post-deploy
+      - name: Check remote contents
         run: |
-          ssh -o StrictHostKeyChecking=no "${{ secrets.PROD_USER }}@${{ secrets.PROD_HOST }}" << 'EOF'
-          set -e
-          cd "${{ secrets.PROD_PATH }}"
-          if [ ! -f .env ]; then
-            echo "ERROR: .env not found on server"; exit 1
-          fi
-          if ! grep -q '^APP_KEY=' .env || [ -z "$(grep '^APP_KEY=' .env | cut -d= -f2)" ]; then
-            php artisan key:generate
-          fi
-          php artisan optimize
-          php artisan config:cache
-          php artisan route:cache
-          php artisan view:cache
-          php artisan storage:link || true
-          find storage -type d -exec chmod 775 {} \;
-          find storage -type f -exec chmod 664 {} \;
-          chmod -R ug+rw bootstrap/cache
-          command -v restorecon >/dev/null 2>&1 && restorecon -Rv storage bootstrap/cache || true
-          EOF
+          set -euxo pipefail
+          ssh -o StrictHostKeyChecking=no "${PROD_USER}@${PROD_HOST}" bash -lc '
+            cd "'"${PROD_PATH}"'"
+            test -f artisan
+            test -d vendor
+            ls -la | sed -n "1,80p"
+          '
+
+      - name: Post-deploy (artisan + perms, PROD-safe)
+        run: |
+          set -euxo pipefail
+          ssh -o StrictHostKeyChecking=no "${PROD_USER}@${PROD_HOST}" bash -lc '
+            set -euxo pipefail
+            cd "'"${PROD_PATH}"'"
+
+            #  .env,   ( heredoc)
+            if [ ! -f .env ]; then
+              printf "%s\n" \
+                "APP_NAME=ValeriiTsoi" \
+                "APP_ENV=production" \
+                "APP_KEY=" \
+                "APP_DEBUG=false" \
+                "APP_URL=https://tsoy.eu" \
+                "SESSION_DRIVER=file" \
+                "CACHE_DRIVER=file" \
+                "CACHE_STORE=file" \
+                "QUEUE_CONNECTION=sync" \
+                "DB_CONNECTION=sqlite" > .env
+            fi
+
+            #  APP_KEY,  
+            if ! grep -q "^APP_KEY=" .env || [ -z "$(grep "^APP_KEY=" .env | cut -d= -f2)" ]; then
+              php artisan key:generate --ansi
+            fi
+
+            #     ,     
+            grep -q "^SESSION_DRIVER=" .env && sed -i "s/^SESSION_DRIVER=.*/SESSION_DRIVER=file/" .env || echo "SESSION_DRIVER=file" >> .env
+            grep -q "^CACHE_DRIVER="   .env && sed -i "s/^CACHE_DRIVER=.*/CACHE_DRIVER=file/"   .env || echo "CACHE_DRIVER=file"   >> .env
+            grep -q "^CACHE_STORE="    .env && sed -i "s/^CACHE_STORE=.*/CACHE_STORE=file/"     .env || echo "CACHE_STORE=file"    >> .env
+            grep -q "^QUEUE_CONNECTION=" .env && sed -i "s/^QUEUE_CONNECTION=.*/QUEUE_CONNECTION=sync/" .env || echo "QUEUE_CONNECTION=sync" >> .env
+
+            #   SQLite   
+            mkdir -p database
+            [ -f database/database.sqlite ] || touch database/database.sqlite
+            chmod 664 database/database.sqlite || true
+
+            # /
+            php artisan optimize
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan storage:link || true
+
+            #  ( sudo) ,  , SELinux-
+            find storage -type d -exec chmod 775 {} \; || true
+            find storage -type f -exec chmod 664 {} \; || true
+            chmod -R ug+rw bootstrap/cache || true
+            command -v restorecon >/dev/null 2>&1 && restorecon -Rv storage bootstrap/cache database || true
+          '
