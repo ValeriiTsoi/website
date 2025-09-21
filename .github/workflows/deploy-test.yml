@@ -1,4 +1,4 @@
-name: Deploy to TEST#3 (RHEL 192.168.1.15)
+name: Deploy to TEST (192.168.1.15)
 
 on:
   push:
@@ -32,7 +32,8 @@ jobs:
           node-version: '20'
 
       - name: Composer install (no-dev)
-        env: { COMPOSER_MEMORY_LIMIT: -1 }
+        env:
+          COMPOSER_MEMORY_LIMIT: -1
         run: composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
 
       - name: Node install
@@ -44,14 +45,6 @@ jobs:
       - name: Show tool versions on runner
         run: |
           set -x
-          which php || true
-          php -v || true
-          which composer || true
-          composer -V || true
-          which node || true
-          node -v || true
-          which npm || true
-          npm -v || true
           which rsync || true
           rsync --version || true
           ssh -V || true
@@ -70,4 +63,41 @@ jobs:
           ssh -vvv -o BatchMode=yes -o StrictHostKeyChecking=no \
             "${{ secrets.TEST_USER }}@${{ secrets.TEST_HOST }}" 'echo SSH_OK'
 
-      - name: Ensure
+      - name: Ensure target path exists
+        run: |
+          set -euxo pipefail
+          ssh -o StrictHostKeyChecking=no "${{ secrets.TEST_USER }}@${{ secrets.TEST_HOST }}" \
+            "mkdir -p '${{ secrets.TEST_PATH }}'"
+
+      - name: Rsync to TEST (verbose)
+        run: |
+          set -euxo pipefail
+          rsync -azvv --delete \
+            -e "ssh -o StrictHostKeyChecking=no" \
+            --exclude ".git" --exclude ".github" \
+            --exclude "node_modules" --exclude "vendor/bin" \
+            --exclude "storage/" --exclude ".env" --exclude ".env.*" \
+            ./ "${{ secrets.TEST_USER }}@${{ secrets.TEST_HOST }}:${{ secrets.TEST_PATH }}"
+
+      - name: Post-deploy
+        run: |
+          set -euxo pipefail
+          ssh -o StrictHostKeyChecking=no "${{ secrets.TEST_USER }}@${{ secrets.TEST_HOST }}" bash -lc '
+            set -euxo pipefail
+            cd "${{ secrets.TEST_PATH }}"
+            if [ ! -f .env ]; then
+              echo ".env is missing on server"; exit 1
+            fi
+            if ! grep -q "^APP_KEY=" .env || [ -z "$(grep "^APP_KEY=" .env | cut -d= -f2)" ]; then
+              php artisan key:generate
+            fi
+            php artisan optimize
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan storage:link || true
+            find storage -type d -exec chmod 775 {} \;
+            find storage -type f -exec chmod 664 {} \;
+            chmod -R ug+rw bootstrap/cache
+            command -v restorecon >/dev/null 2>&1 && restorecon -Rv storage bootstrap/cache || true
+          '
