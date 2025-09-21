@@ -15,27 +15,43 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    env:
+      PROD_USER: ${{ secrets.PROD_USER }}
+      PROD_HOST: ${{ secrets.PROD_HOST }}
+      PROD_PATH: ${{ secrets.PROD_PATH }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Validate required secrets
+        run: |
+          set -e
+          for v in PROD_USER PROD_HOST PROD_PATH; do
+            if [ -z "${!v}" ]; then
+              echo " Missing secret/env: $v (Repo  Settings  Secrets  Actions)"; exit 1
+            fi
+          done
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
           extensions: mbstring, intl, dom, curl, fileinfo, zip
-
-      - name: Install Composer deps (no-dev)
-        env:
-          COMPOSER_MEMORY_LIMIT: -1
-        run: composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+          tools: composer:v2
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Install Node deps
+      - name: Composer install (no-dev)
+        env:
+          COMPOSER_MEMORY_LIMIT: -1
+        run: composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+
+      - name: Node install
         run: npm ci || npm install --no-audit --no-fund
 
       - name: Build assets
@@ -45,34 +61,49 @@ jobs:
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          #     SSH_PRIVATE_KEY_PROD   
+          #      SSH_PRIVATE_KEY_PROD
+
+      - name: Test SSH to PROD (verbose)
+        run: |
+          set -euxo pipefail
+          ssh -vvv -o BatchMode=yes -o StrictHostKeyChecking=no \
+            "$PROD_USER@$PROD_HOST" 'echo SSH_OK'
+
+      - name: Ensure target path exists
+        run: |
+          set -euxo pipefail
+          ssh -o StrictHostKeyChecking=no "$PROD_USER@$PROD_HOST" \
+            "mkdir -p '$PROD_PATH'"
 
       - name: Rsync to PROD
         run: |
+          set -euxo pipefail
           rsync -az --delete \
+            -e "ssh -o StrictHostKeyChecking=no" \
             --exclude ".git" --exclude ".github" \
             --exclude "node_modules" --exclude "vendor/bin" \
             --exclude "storage/" --exclude ".env" --exclude ".env.*" \
-            ./ "${{ secrets.PROD_USER }}@${{ secrets.PROD_HOST }}:${{ secrets.PROD_PATH }}"
+            ./ "$PROD_USER@$PROD_HOST:$PROD_PATH"
 
       - name: Post-deploy
         run: |
-          ssh -o StrictHostKeyChecking=no "${{ secrets.PROD_USER }}@${{ secrets.PROD_HOST }}" << 'EOF'
-          set -e
-          cd "${{ secrets.PROD_PATH }}"
-          if [ ! -f .env ]; then
-            echo "ERROR: .env not found on server"; exit 1
-          fi
-          if ! grep -q '^APP_KEY=' .env || [ -z "$(grep '^APP_KEY=' .env | cut -d= -f2)" ]; then
-            php artisan key:generate
-          fi
-          php artisan optimize
-          php artisan config:cache
-          php artisan route:cache
-          php artisan view:cache
-          php artisan storage:link || true
-          find storage -type d -exec chmod 775 {} \;
-          find storage -type f -exec chmod 664 {} \;
-          chmod -R ug+rw bootstrap/cache
-          command -v restorecon >/dev/null 2>&1 && restorecon -Rv storage bootstrap/cache || true
-          EOF
+          set -euxo pipefail
+          ssh -o StrictHostKeyChecking=no "$PROD_USER@$PROD_HOST" bash -lc '
+            set -euxo pipefail
+            cd "$PROD_PATH"
+            if [ ! -f .env ]; then
+              echo "ERROR: .env not found on server"; exit 1
+            fi
+            if ! grep -q "^APP_KEY=" .env || [ -z "$(grep "^APP_KEY=" .env | cut -d= -f2)" ]; then
+              php artisan key:generate
+            fi
+            php artisan optimize
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan storage:link || true
+            find storage -type d -exec chmod 775 {} \;
+            find storage -type f -exec chmod 664 {} \;
+            chmod -R ug+rw bootstrap/cache
+            command -v restorecon >/dev/null 2>&1 && restorecon -Rv storage bootstrap/cache || true
+          '

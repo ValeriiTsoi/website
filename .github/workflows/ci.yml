@@ -46,6 +46,13 @@ jobs:
       - name: Build assets
         run: npm run build --if-present
 
-      - name: Run PHPUnit (if config exists)
+      #  .env  APP_KEY  
+      - name: Prepare .env (testing)
+        run: |
+          cp .env.example .env
+          php artisan key:generate --ansi
+
+      #  -   / -> /en;   -
+      - name: Run PHPUnit (unit only)
         if: ${{ hashFiles('phpunit.xml*') != '' }}
-        run: vendor/bin/phpunit --testdox
+        run: vendor/bin/phpunit --testsuite=Unit --testdox

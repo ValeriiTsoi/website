@@ -15,9 +15,25 @@ concurrency:
 jobs:
   deploy:
     runs-on: self-hosted
+
+    #    Secrets (    )
+    env:
+      TEST_USER: ${{ secrets.TEST_USER }}
+      TEST_HOST: ${{ secrets.TEST_HOST }}
+      TEST_PATH: ${{ secrets.TEST_PATH }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Validate required secrets
+        run: |
+          set -e
+          for v in TEST_USER TEST_HOST TEST_PATH; do
+            if [ -z "${!v}" ]; then
+              echo " Missing secret/env: $v (Repo  Settings  Secrets  Actions)"; exit 1
+            fi
+          done
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -64,13 +80,13 @@ jobs:
         run: |
           set -euxo pipefail
           ssh -vvv -o BatchMode=yes -o StrictHostKeyChecking=no \
-            "${{ secrets.TEST_USER }}@${{ secrets.TEST_HOST }}" 'echo SSH_OK'
+            "$TEST_USER@$TEST_HOST" 'echo SSH_OK'
 
       - name: Ensure target path exists
         run: |
           set -euxo pipefail
-          ssh -o StrictHostKeyChecking=no "${{ secrets.TEST_USER }}@${{ secrets.TEST_HOST }}" \
-            "mkdir -p '${{ secrets.TEST_PATH }}'"
+          ssh -o StrictHostKeyChecking=no "$TEST_USER@$TEST_HOST" \
+            "mkdir -p '$TEST_PATH'"
 
       - name: Rsync to TEST (verbose)
         run: |
@@ -80,14 +96,14 @@ jobs:
             --exclude ".git" --exclude ".github" \
             --exclude "node_modules" --exclude "vendor/bin" \
             --exclude "storage/" --exclude ".env" --exclude ".env.*" \
-            ./ "${{ secrets.TEST_USER }}@${{ secrets.TEST_HOST }}:${{ secrets.TEST_PATH }}"
+            ./ "$TEST_USER@$TEST_HOST:$TEST_PATH"
 
       - name: Post-deploy (artisan + perms)
         run: |
           set -euxo pipefail
-          ssh -o StrictHostKeyChecking=no "${{ secrets.TEST_USER }}@${{ secrets.TEST_HOST }}" bash -lc '
+          ssh -o StrictHostKeyChecking=no "$TEST_USER@$TEST_HOST" bash -lc '
             set -euxo pipefail
-            cd "${{ secrets.TEST_PATH }}"
+            cd "$TEST_PATH"
             if [ ! -f .env ]; then
               echo ".env is missing on server"; exit 1
             fi
@@ -104,16 +120,3 @@ jobs:
             chmod -R ug+rw bootstrap/cache
             command -v restorecon >/dev/null 2>&1 && restorecon -Rv storage bootstrap/cache || true
           '
-
-      - name: Validate required secrets
-        env:
-          TEST_USER: ${{ secrets.TEST_USER }}
-          TEST_HOST: ${{ secrets.TEST_HOST }}
-          TEST_PATH: ${{ secrets.TEST_PATH }}
-        run: |
-          set -e
-          for v in TEST_USER TEST_HOST TEST_PATH; do
-            if [ -z "${!v}" ]; then
-              echo " Missing secret: $v (define in Repo  Settings  Secrets  Actions)"; exit 1
-            fi
-          done
