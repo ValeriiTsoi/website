@@ -57,4 +57,4 @@ jobs:
           chmod -R ug+rw bootstrap/cache
           # SELinux (если включен)
           which chcon && chcon -R -t httpd_sys_rw_content_t storage bootstrap/cache || true
-          EOF
+    
