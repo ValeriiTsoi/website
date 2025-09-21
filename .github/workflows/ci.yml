@@ -1,3 +1,49 @@
 name: CI
-on: [push]
-jobs: {dummy:{runs-on:ubuntu-latest, steps:[{run:'echo ok'}]}}
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: PHP info
+        run: php -v
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, intl, dom, curl, fileinfo, zip
+
+      - name: Validate composer.json
+        run: composer validate --no-check-all --strict
+
+      - name: Install Composer deps (with dev)
+        env:
+          COMPOSER_MEMORY_LIMIT: -1
+        run: composer install --prefer-dist --no-interaction
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Node deps
+        run: npm ci || npm install --no-audit --no-fund
+
+      - name: Build assets
+        run: npm run build --if-present
+
+      - name: Run PHPUnit (if config exists)
+        if: ${{ hashFiles('phpunit.xml*') != '' }}
+        run: vendor/bin/phpunit --testdox
