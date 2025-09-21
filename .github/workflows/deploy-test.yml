@@ -1,8 +1,9 @@
-name: Deploy to TEST (RHEL 192.168.1.15)
+name: Deploy to TEST (192.168.1.15)
 
 on:
   push:
-    branches: [dev]
+    branches:
+      - dev
   workflow_dispatch:
 
 permissions:
@@ -16,7 +17,7 @@ jobs:
   deploy:
     runs-on: self-hosted
 
-    #    Secrets (    )
+    #  Secrets  (Repo  Settings  Secrets and variables  Actions  Secrets)
     env:
       TEST_USER: ${{ secrets.TEST_USER }}
       TEST_HOST: ${{ secrets.TEST_HOST }}
@@ -28,19 +29,31 @@ jobs:
 
       - name: Validate required secrets
         run: |
-          set -e
+          set -euo pipefail
           for v in TEST_USER TEST_HOST TEST_PATH; do
-            if [ -z "${!v}" ]; then
-              echo " Missing secret/env: $v (Repo  Settings  Secrets  Actions)"; exit 1
+            if [ -z "${!v:-}" ]; then
+              echo " Missing $v (set it in Repo  Settings  Secrets and variables  Actions  Secrets)"; exit 1;
             fi
           done
+          echo " Secrets present"
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.3'
-          extensions: mbstring, intl, dom, curl, fileinfo, zip
-          tools: composer:v2
+      - name: Use system PHP & Composer on self-hosted
+        run: |
+          set -euxo pipefail
+          php -v
+          which php
+          if command -v composer >/dev/null 2>&1; then
+            composer -V
+          else
+            echo "Installing Composer (one-time)..."
+            EXPECTED_SIGNATURE=$(curl -sS https://composer.github.io/installer.sig)
+            php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+            ACTUAL_SIGNATURE=$(php -r "echo hash_file('sha384', 'composer-setup.php');")
+            [ "$EXPECTED_SIGNATURE" = "$ACTUAL_SIGNATURE" ] || { echo "ERROR: Invalid composer installer"; rm -f composer-setup.php; exit 1; }
+            sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+            rm -f composer-setup.php
+            composer -V
+          fi
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -50,73 +63,107 @@ jobs:
       - name: Composer install (no-dev)
         env:
           COMPOSER_MEMORY_LIMIT: -1
-        run: composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+        run: |
+          set -euxo pipefail
+          composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+          test -d vendor
 
       - name: Node install
-        run: npm ci || npm install --no-audit --no-fund
+        run: |
+          set -euxo pipefail
+          npm ci || npm install --no-audit --no-fund
 
       - name: Build assets
-        run: npm run build --if-present
-
-      - name: Show tool versions on runner
         run: |
-          set -x
-          which php || true; php -v || true
-          which composer || true; composer -V || true
-          which node || true; node -v || true
-          which npm || true; npm -v || true
-          which rsync || true; rsync --version || true
-          ssh -V || true
+          set -euxo pipefail
+          npm run build --if-present
 
-      - name: Add SSH key
+      - name: Verify Vite manifest exists
+        run: |
+          set -euxo pipefail
+          test -f public/build/manifest.json || { echo " No Vite manifest (did npm run build?)"; exit 1; }
+          echo " manifest.json present"
+
+      - name: Add SSH key (for rsync/ssh)
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: List loaded SSH keys
-        run: ssh-add -l || true
-
-      - name: Test SSH to TEST (verbose)
-        run: |
-          set -euxo pipefail
-          ssh -vvv -o BatchMode=yes -o StrictHostKeyChecking=no \
-            "$TEST_USER@$TEST_HOST" 'echo SSH_OK'
+      # :    SSH (  )
+      # - name: Test SSH to TEST (very verbose)
+      #   run: |
+      #     set -euxo pipefail
+      #     ssh -vvv -o BatchMode=yes -o StrictHostKeyChecking=no "${TEST_USER}@${TEST_HOST}" 'echo SSH_OK'
 
       - name: Ensure target path exists
         run: |
           set -euxo pipefail
-          ssh -o StrictHostKeyChecking=no "$TEST_USER@$TEST_HOST" \
-            "mkdir -p '$TEST_PATH'"
+          ssh -o StrictHostKeyChecking=no "${TEST_USER}@${TEST_HOST}" "mkdir -p '${TEST_PATH}'"
 
-      - name: Rsync to TEST (verbose)
+      - name: Rsync to TEST
         run: |
           set -euxo pipefail
-          rsync -azvv --delete \
+          rsync -az --delete \
             -e "ssh -o StrictHostKeyChecking=no" \
             --exclude ".git" --exclude ".github" \
             --exclude "node_modules" --exclude "vendor/bin" \
             --exclude "storage/" --exclude ".env" --exclude ".env.*" \
-            ./ "$TEST_USER@$TEST_HOST:$TEST_PATH"
+            "$GITHUB_WORKSPACE/." "${TEST_USER}@${TEST_HOST}:${TEST_PATH}"
 
-      - name: Post-deploy (artisan + perms)
+      - name: Check remote contents
         run: |
           set -euxo pipefail
-          ssh -o StrictHostKeyChecking=no "$TEST_USER@$TEST_HOST" bash -lc '
+          ssh -o StrictHostKeyChecking=no "${TEST_USER}@${TEST_HOST}" bash -lc '
+            cd "'"${TEST_PATH}"'"
+            test -f artisan
+            test -d vendor
+            ls -la | sed -n "1,80p"
+          '
+
+      - name: Post-deploy (artisan + perms, TEST-friendly)
+        run: |
+          set -euxo pipefail
+          ssh -o StrictHostKeyChecking=no "${TEST_USER}@${TEST_HOST}" bash -lc '
             set -euxo pipefail
-            cd "$TEST_PATH"
+            cd "'"${TEST_PATH}"'"
+
+            #  .env    
             if [ ! -f .env ]; then
-              echo ".env is missing on server"; exit 1
+              cat > .env <<ENV
+                APP_NAME=ValeriiTsoi
+                APP_ENV=production
+                APP_KEY=
+                APP_DEBUG=false
+                APP_URL=http://192.168.1.15
+                SESSION_DRIVER=file
+                CACHE_DRIVER=file
+                CACHE_STORE=file
+                QUEUE_CONNECTION=sync
+                DB_CONNECTION=sqlite
+              ENV
             fi
+
+            #  APP_KEY   
             if ! grep -q "^APP_KEY=" .env || [ -z "$(grep "^APP_KEY=" .env | cut -d= -f2)" ]; then
-              php artisan key:generate
+              php artisan key:generate --ansi
             fi
+
+            #      
+            grep -q "^SESSION_DRIVER=" .env && sed -i "s/^SESSION_DRIVER=.*/SESSION_DRIVER=file/" .env || echo "SESSION_DRIVER=file" >> .env
+            grep -q "^CACHE_DRIVER="   .env && sed -i "s/^CACHE_DRIVER=.*/CACHE_DRIVER=file/"   .env || echo "CACHE_DRIVER=file"   >> .env
+            grep -q "^CACHE_STORE="    .env && sed -i "s/^CACHE_STORE=.*/CACHE_STORE=file/"     .env || echo "CACHE_STORE=file"    >> .env
+            grep -q "^QUEUE_CONNECTION=" .env && sed -i "s/^QUEUE_CONNECTION=.*/QUEUE_CONNECTION=sync/" .env || echo "QUEUE_CONNECTION=sync" >> .env
+
+            #  
             php artisan optimize
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
             php artisan storage:link || true
-            find storage -type d -exec chmod 775 {} \;
-            find storage -type f -exec chmod 664 {} \;
-            chmod -R ug+rw bootstrap/cache
+
+            # /SELinux ( sudo, )
+            find storage -type d -exec chmod 775 {} \; || true
+            find storage -type f -exec chmod 664 {} \; || true
+            chmod -R ug+rw bootstrap/cache || true
             command -v restorecon >/dev/null 2>&1 && restorecon -Rv storage bootstrap/cache || true
           '
