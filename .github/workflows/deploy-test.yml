@@ -77,6 +77,13 @@ jobs:
           set -euxo pipefail
           npm run build --if-present
 
+      - name: Write build info (version.txt)
+        run: |
+          set -euo pipefail
+          echo "branch=${GITHUB_REF_NAME}" > public/version.txt
+          echo "sha=${GITHUB_SHA}"       >> public/version.txt
+          date -u +"built=%Y-%m-%dT%H:%M:%SZ" >> public/version.txt
+
       - name: Verify Vite manifest exists
         run: |
           set -euxo pipefail
@@ -88,7 +95,6 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      #  SSH ( )
       # - name: Test SSH to TEST (very verbose)
       #   run: |
       #     set -euxo pipefail
@@ -99,10 +105,10 @@ jobs:
           set -euxo pipefail
           ssh -o StrictHostKeyChecking=no "${TEST_USER}@${TEST_HOST}" "mkdir -p '${TEST_PATH}'"
 
-      - name: Rsync to TEST
+      - name: Rsync to TEST (verbose)
         run: |
           set -euxo pipefail
-          rsync -az --delete \
+          rsync -azv --delete \
             -e "ssh -o StrictHostKeyChecking=no" \
             --exclude ".git" --exclude ".github" \
             --exclude "node_modules" --exclude "vendor/bin" \
@@ -126,7 +132,7 @@ jobs:
             set -euxo pipefail
             cd "'"${TEST_PATH}"'"
 
-            # .env  heredoc,    YAML/SSH
+            # .env  heredoc
             if [ ! -f .env ]; then
               printf "%s\n" \
                 "APP_NAME=ValeriiTsoi" \
@@ -146,13 +152,13 @@ jobs:
               php artisan key:generate --ansi
             fi
 
-            #     
+            #    
             grep -q "^SESSION_DRIVER=" .env && sed -i "s/^SESSION_DRIVER=.*/SESSION_DRIVER=file/" .env || echo "SESSION_DRIVER=file" >> .env
             grep -q "^CACHE_DRIVER="   .env && sed -i "s/^CACHE_DRIVER=.*/CACHE_DRIVER=file/"   .env || echo "CACHE_DRIVER=file"   >> .env
             grep -q "^CACHE_STORE="    .env && sed -i "s/^CACHE_STORE=.*/CACHE_STORE=file/"     .env || echo "CACHE_STORE=file"    >> .env
             grep -q "^QUEUE_CONNECTION=" .env && sed -i "s/^QUEUE_CONNECTION=.*/QUEUE_CONNECTION=sync/" .env || echo "QUEUE_CONNECTION=sync" >> .env
 
-            #   SQLite,      
+            # SQLite    (    )
             mkdir -p database
             [ -f database/database.sqlite ] || touch database/database.sqlite
             chmod 664 database/database.sqlite || true
@@ -164,9 +170,22 @@ jobs:
             php artisan view:cache
             php artisan storage:link || true
 
-            #   ( ) SELinux-
+            #   SELinux ( )
             find storage -type d -exec chmod 775 {} \; || true
             find storage -type f -exec chmod 664 {} \; || true
             chmod -R ug+rw bootstrap/cache || true
             command -v restorecon >/dev/null 2>&1 && restorecon -Rv storage bootstrap/cache database || true
+          '
+
+      - name: Remote sanity check (version/assets)
+        run: |
+          set -euxo pipefail
+          ssh -o StrictHostKeyChecking=no "${TEST_USER}@${TEST_HOST}" bash -lc '
+            cd "'"${TEST_PATH}"'"
+            echo "--- version.txt ---"
+            sed -n "1,5p" public/version.txt || true
+            echo "--- manifest.json mtime ---"
+            stat -c "%y %n" public/build/manifest.json || true
+            echo "--- first assets ---"
+            ls -l public/build/assets | sed -n "1,5p" || true
           '
