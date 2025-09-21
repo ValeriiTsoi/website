@@ -1,4 +1,4 @@
-name: Deploy to TEST (192.168.1.15)
+name: Deploy to TEST (RHEL 192.168.1.15)
 
 on:
   push:
