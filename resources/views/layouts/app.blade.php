@@ -3,21 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ config('app.name') }} — @yield('title','Home')</title>
-
-@php
-    $manifestPath = public_path('build/manifest.json');
-    $manifest = file_exists($manifestPath) ? json_decode(file_get_contents($manifestPath), true) : [];
-    $cssFile = $manifest['resources/css/app.css']['file'] ?? ($manifest['resources/js/app.js']['css'][0] ?? null);
-    $jsFile  = $manifest['resources/js/app.js']['file']  ?? null;
-@endphp
-
-@if($cssFile)
-  <link rel="stylesheet" href="{{ asset('build/'.$cssFile) }}">
-@endif
-@if($jsFile)
-  <script type="module" src="{{ asset('build/'.$jsFile) }}" defer></script>
-@endif
-
+@vite(['resources/css/app.css','resources/js/app.js'])
 </head>
 <body class="antialiased text-neutral-800">
 @php
