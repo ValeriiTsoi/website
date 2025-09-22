@@ -1,10 +1,11 @@
 {
+  "meta.home": "Головна",
   "nav.about": "Про мене",
   "nav.projects": "Проєкти",
   "nav.hobby": "Хобі",
-  "nav.contact": "Контакти",
+  "nav.contact": "Зв’язатися",
 
-  "hero.title": "Shipлю фічі, не інциденти.",
-  "hero.subtitle": "Cloud-native фінтех: security-by-design і compliance-by-default.",
-  "hero.tagline": "Технології творять наше майбутнє, але не забувай про свою природу та індивідуальність."
+  "hero.headline": "Shipлю фічі, не інциденти.",
+  "hero.tagline": "Cloud-native фінтех: security-by-design і compliance-by-default.",
+  "hero.subnote": "Технології формують наше майбутнє, але не забувайте про свою природу та індивідуальність."
 }

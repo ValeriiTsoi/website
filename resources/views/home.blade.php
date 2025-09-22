@@ -1,8 +1,10 @@
 @extends('layouts.app')
-@section('title', 'Home')
+
+@section('title', __('meta.home'))
+
 @section('content')
 <section class="relative w-full min-h-[380px] md:min-h-[420px]">
-  <!--  (/ ) -->
+  <!--  (/   prefers-color-scheme) -->
   <picture class="absolute inset-0 -z-10">
     <source media="(prefers-color-scheme: dark)" srcset="/images/hero/hero-banner-dark.svg">
     <img src="/images/hero/hero-banner-light.svg"
@@ -11,7 +13,7 @@
          loading="eager" decoding="async">
   </picture>
 
-  <!--    -->
+  <!--    () -->
   <div class="max-w-6xl mx-auto h-full px-4 py-10 flex items-end justify-end">
     <div class="text-right max-w-xl">
       <h1 class="text-3xl md:text-4xl font-bold leading-snug">

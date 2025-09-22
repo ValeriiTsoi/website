@@ -1,10 +1,11 @@
 {
+  "meta.home": "Inicio",
   "nav.about": "Sobre m",
   "nav.projects": "Proyectos",
-  "nav.hobby": "Aficiones",
+  "nav.hobby": "Hobby",
   "nav.contact": "Contctame",
 
-  "hero.title": "Lanzo valor, no incidentes.",
-  "hero.subtitle": "FinTech cloud-native con seguridad integrada y cumplimiento de serie.",
-  "hero.tagline": "La tecnologa forja el futuro, pero no olvides tu esencia ni tu individualidad."
+  "hero.headline": "Lanzo valor, no incidentes.",
+  "hero.tagline": "FinTech cloud-native con seguridad integrada y cumplimiento de serie.",
+  "hero.subnote": "La tecnologa moldea nuestro futuro, pero no olvides tu naturaleza e individualidad."
 }

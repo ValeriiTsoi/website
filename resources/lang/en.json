@@ -1,10 +1,11 @@
 {
+  "meta.home": "Home",
   "nav.about": "About",
   "nav.projects": "Projects",
   "nav.hobby": "Hobby",
   "nav.contact": "Contact me",
 
-  "hero.title": "Shipping features, not incidents.",
-  "hero.subtitle": "Cloud-native FinTech with security-by-design and compliance-by-default.",
-  "hero.tagline": "Technology shapes our future, but don't forget your nature and individuality."
+  "hero.headline": "Shipping features, not incidents.",
+  "hero.tagline": "Cloud-native FinTech with security-by-design and compliance-by-default.",
+  "hero.subnote": "Technology shapes our future, but don't forget your nature and individuality."
 }
