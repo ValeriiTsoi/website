@@ -1,14 +1,27 @@
 {
-  "home.title": "Головна",
-  "home.h1": "Shipлю фічі, не інциденти.",
-  "home.sub": "Cloud-native фінтех: security-by-design і compliance-by-default.",
-  "nav.about": "Про мене",
-  "nav.projects": "Проєкти",
-  "nav.hobby": "Хобі",
-  "nav.contact": "Зв’язатися",
-  "hobby.travel": "Подорожі",
-  "hobby.sports": "Спорт",
-  "hobby.pets": "Домашні улюбленці",
-  "hobby.smarthome": "Розумний дім",
-  "hobby.radio": "Радіоелектроніка"
+  "about": {
+    "title": "Про мене",
+    "name": "Валерій Цой",
+    "roles": "CIO • CTO • COO • CISO • Project Management • IT Architect • Tech Lead",
+    "locations": "Іспанія • Україна • Казахстан • Китай",
+    "summary": "Керівник ІТ з 20+ роками досвіду у FinTech, банкінгу та фондових біржах. Експертиза в управлінні ІТ та безпекою, хмарних платформах і цифровій трансформації. Запускав торгові платформи, банківські рішення та платіжні сервіси на різних ринках.",
+    "key_skills": "Ключові навички",
+    "skills": ["ІТ-управління та FinTech","Діджитал-банкінг і трейдинг","DevOps & CI/CD (K8s, Terraform, GitHub)","Хмари (AWS, Azure)","Безпека та комплаєнс (ISO 27001/27032, GDPR, DORA, MiCA)","Agile, Lean Six Sigma","Інтеграції та бекенд (C/Java/PHP/Python, API, мікросервіси)"],
+    "experience_title": "Досвід",
+    "experience": [
+      {"role":"CIO, Член Правління","company":"Astana International Exchange (AIX)","period":"2018–2024","bullets":["Перша у світі 100% хмарна біржа на AWS.","Впровадження Nasdaq ME та BI.","ISO-сертифікована кібербезпека та комплаєнс.","Багатовалютний трейдинг і кліринг."]},
+      {"role":"CTO & COO, Член Правління","company":"MS Finance (Китай)","period":"2016–2018","bullets":["Запуск fintech по всій країні (3000+ FTE).","Хмарна інфраструктура для фінпослуг.","AI-скоринг та інтеграції WeChat/UnionPay."]},
+      {"role":"Член Правління / Head of BD","company":"Home Credit Bank (KZ)","period":"2013–2016","bullets":["Мобільний банкінг та власний процесинг карт.","PMO, Agile, оптимізація процесів (Lean Six Sigma)."]},
+      {"role":"CIO","company":"Home Credit Bank (UA & KZ)","period":"2003–2013","bullets":["Core banking, CRM, колекшн, Call Center.","SWIFT/Reuters і захищені процесингові центри."]}
+    ],
+    "education_title":"Освіта та сертифікації",
+    "education":["Автоматизація виробництв — ДВХТУ","Mini-MBA — MCA Paris","CISM — ISACA","Lean Six Sigma","PMBOK","Сертифікований член ради (НБРК & CBRC)"]
+  },
+  "projects": {
+    "title":"Проєкти",
+    "lead":"Вибрані роботи у біржовій, банківській та fintech-сферах.",
+    "role":"Роль",
+    "read_more":"Детальніше",
+    "items": [] 
+  }
 }

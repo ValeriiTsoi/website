@@ -1,14 +1,27 @@
 {
-  "home.title": "Главная",
-  "home.h1": "Shipлю фичи, не инциденты.",
-  "home.sub": "Cloud-native финтех: security-by-design и compliance-by-default.",
-  "nav.about": "Обо мне",
-  "nav.projects": "Проекты",
-  "nav.hobby": "Хобби",
-  "nav.contact": "Связаться",
-  "hobby.travel": "Путешествия",
-  "hobby.sports": "Спорт",
-  "hobby.pets": "Домашние животные",
-  "hobby.smarthome": "Домашняя автоматика",
-  "hobby.radio": "Радиоэлектроника"
+  "about": {
+    "title": "Обо мне",
+    "name": "Валерий Цой",
+    "roles": "CIO • CTO • COO • CISO • Project Management • IT Architect • Tech Lead",
+    "locations": "Испания • Украина • Казахстан • Китай",
+    "summary": "Более 20 лет в FinTech, банкинге и на фондовых рынках. Управление ИТ и безопасностью, облака и цифровая трансформация. Запускал торговые платформы, банковские решения и платёжные сервисы на международных рынках.",
+    "key_skills": "Ключевые навыки",
+    "skills": ["ИТ-менеджмент и FinTech","Диджитал-банкинг и трейдинг","DevOps & CI/CD (K8s, Terraform, GitHub)","Облака (AWS, Azure)","Безопасность и комплаенс (ISO 27001/27032, GDPR, DORA, MiCA)","Agile, Lean Six Sigma","Бэкенд и интеграции (C/Java/PHP/Python, API, микросервисы)"],
+    "experience_title": "Опыт",
+    "experience": [
+      {"role":"CIO, член Правления","company":"Astana International Exchange (AIX)","period":"2018–2024","bullets":["Первая в мире 100% облачная биржа на AWS.","Nasdaq ME и BI-отчётность.","ISO-сертифицированная безопасность и комплаенс.","Мультивалютный трейдинг и расчёты."]},
+      {"role":"CTO & COO, член Правления","company":"MS Finance (Китай)","period":"2016–2018","bullets":["Запуск финтеха по всей стране (3000+ FTE).","Облачная ИТ-инфраструктура.","AI-скоринг и интеграции WeChat/UnionPay."]},
+      {"role":"Член Правления / Head of BD","company":"Home Credit Bank (KZ)","period":"2013–2016","bullets":["Мобильный банк и собственный карт-процессинг.","PMO, Agile, Lean Six Sigma."]},
+      {"role":"CIO","company":"Home Credit Bank (UA & KZ)","period":"2003–2013","bullets":["Core banking, CRM, коллекшн, Call Center.","SWIFT/Reuters и защищённые процессинговые центры."]}
+    ],
+    "education_title":"Образование и сертификаты",
+    "education":["Автоматизация производств — ДВХТУ","Mini-MBA — MCA Paris","CISM — ISACA","Lean Six Sigma","PMBOK","Сертифицированный член совета (НБРК & CBRC)"]
+  },
+  "projects": {
+    "title":"Проекты",
+    "lead":"Выборка работ из биржевого, банковского и финтех опыта.",
+    "role":"Роль",
+    "read_more":"Подробнее",
+    "items": []
+  }
 }

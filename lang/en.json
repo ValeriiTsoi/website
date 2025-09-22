@@ -1,14 +1,135 @@
 {
-  "home.title": "Home",
-  "home.h1": "Shipping features, not incidents.",
-  "home.sub": "Cloud-native FinTech with security-by-design and compliance-by-default.",
-  "nav.about": "About",
-  "nav.projects": "Projects",
-  "nav.hobby": "Hobby",
-  "nav.contact": "Contact me",
-  "hobby.travel": "Travel",
-  "hobby.sports": "Sports",
-  "hobby.pets": "Pets",
-  "hobby.smarthome": "Home automation",
-  "hobby.radio": "Radio electronics"
+  "about": {
+    "title": "About",
+    "name": "Valerii Tsoi",
+    "roles": "CIO  CTO  COO  CISO  Project Management  IT Architect  Tech Lead",
+    "locations": "Spain  Ukraine  Kazakhstan  China",
+    "summary": "Results-driven IT leader with 20+ years in FinTech, banking and stock exchange. Proven track in IT governance, information security, cloud and digital transformation. Launched trading platforms, banking software and payment solutions across global markets.",
+    "key_skills": "Key skills",
+    "skills": [
+      "IT Governance & FinTech",
+      "Digital Banking & Trading",
+      "DevOps & CI/CD (K8s, Terraform, GitHub)",
+      "Cloud (AWS, Azure)",
+      "Security & Compliance (ISO 27001/27032, GDPR, DORA, MiCA)",
+      "Project & Process Mgmt (Agile, Lean Six Sigma)",
+      "Backend & Integrations (C/Java/PHP/Python, APIs, microservices)"
+    ],
+    "experience_title": "Experience",
+    "experience": [
+      {
+        "role": "CIO, Executive Committee Member",
+        "company": "Astana International Exchange (AIX)",
+        "period": "20182024",
+        "bullets": [
+          "Built the world's first 100% cloud-based stock exchange on AWS.",
+          "Implemented Nasdaqs high-performance trading and BI.",
+          "Established ISO-certified security & compliance frameworks.",
+          "Delivered multi-currency trading & settlement solutions."
+        ]
+      },
+      { 
+        "role": "CTO & COO, Exec Committee",
+        "company": "MS Finance (China)",
+        "period": "20162018",
+        "bullets": [
+          "Nation-wide fintech launch supporting 3,000+ FTE.",
+          "Cloud infrastructure for financial services.",
+          "AI-driven risk underwriting and scoring; WeChat/UnionPay integrations."
+        ]
+      },
+      {
+        "role": "Board Member / Head of Business Development",
+        "company": "Home Credit Bank (KZ)",
+        "period": "20132016",
+        "bullets": [
+          "Launched mobile banking and own card processing.",
+          "Built PMO, introduced Agile; optimized processes via Lean Six Sigma."
+        ]
+      },
+      {
+        "role": "CIO",
+        "company": "Home Credit Bank (UA & KZ)",
+        "period": "20032013",
+        "bullets": [
+          "Core banking, CRM, collections, Call Center implementations.",
+          "SWIFT/Reuters and high-security card processing centers."
+        ]
+      }
+    ],
+    "education_title": "Education & Certifications",
+    "education": [
+      "Automation of Production & Industries  Ukrainian State Chemical Technology University",
+      "Mini-MBA  MCA Paris",
+      "CISM  ISACA",
+      "Lean Six Sigma",
+      "PMBOK, Project Management & Optimization",
+      "Certified Board Member (NBRK & CBRC)"
+    ]
+  },
+
+  "projects": {
+    "title": "Projects",
+    "lead": "Selected work from stock exchange, banking and fintech domains.",
+    "role": "Role",
+    "read_more": "Read more",
+    "items": [
+      {
+        "name": "Nasdaq ME trading in public cloud",
+        "org": "AIX",
+        "year": "2020",
+        "desc": "First implementation of Nasdaq ME in AWS public cloud.",
+        "role": "Project Manager, Solution Architect",
+        "link": "https://www.nasdaq.com/articles/aix-marketplace-transitions-to-the-cloud-2020-09-17"
+      },
+      {
+        "name": "AIX Connect Mobile App & PaaS",
+        "org": "AIX",
+        "year": "20192020",
+        "desc": "Mobile access for retail investors; PaaS for brokers & custodians.",
+        "role": "PM, Architect, Tech Lead, Developer",
+        "link": "https://aix.kz/aix-launches-mobile-application-for-retail-investors-aix-connect/"
+      },
+      {
+        "name": "Tabys Mobile App",
+        "org": "AIX",
+        "year": "20202023",
+        "desc": "Simple start into investing for non-professionals; easy SaaS integrations.",
+        "role": "PM, Architect, Tech Lead, Developer",
+        "link": "https://www.tabysapp.kz/"
+      },
+      {
+        "name": "ISO 27001/27032 certification",
+        "org": "AIX",
+        "year": "20192023",
+        "desc": "ISO 27001/27032 with 27018/27017 for cloud across full business cycle.",
+        "role": "Project Manager, CISO",
+        "link": "https://aix.kz/aix-reconfirms-compliance-with-global-iso-standards/"
+      },
+      {
+        "name": "SWIFT Alliance Cloud",
+        "org": "AIX",
+        "year": "2023",
+        "desc": "Secure SWIFT connectivity on AWS.",
+        "role": "PM, Architect, Tech Lead, Developer",
+        "link": "https://aix.kz/aix-joins-swifts-cloud/"
+      },
+      {
+        "name": "100% AWS-based Exchange Infrastructure",
+        "org": "AIX",
+        "year": "20182023",
+        "desc": "First international exchange fully in the public cloud.",
+        "role": "PM, Architect",
+        "link": "https://aws.amazon.com/solutions/case-studies/aix-case-study/"
+      },
+      {
+        "name": "MS Consumer Finance  infra & tech",
+        "org": "MSFX (China)",
+        "year": "20152018",
+        "desc": "Core software, AI solutions, and integrations for licensed fintech.",
+        "role": "CTO, COO, PM, Architect",
+        "link": "https://www.msxf.com/about_us"
+      }
+    ]
+  }
 }

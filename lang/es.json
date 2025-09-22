@@ -1,14 +1,27 @@
 {
-  "home.title": "Inicio",
-  "home.h1": "Lanzo valor, no incidentes.",
-  "home.sub": "FinTech cloud-native con seguridad integrada y cumplimiento de serie.",
-  "nav.about": "Acerca de",
-  "nav.projects": "Proyectos",
-  "nav.hobby": "Hobby",
-  "nav.contact": "Contáctame",
-  "hobby.travel": "Viajes",
-  "hobby.sports": "Deportes",
-  "hobby.pets": "Mascotas",
-  "hobby.smarthome": "Domótica",
-  "hobby.radio": "Radioelectrónica"
+  "about": {
+    "title": "Acerca de",
+    "name": "Valerii Tsoi",
+    "roles": "CIO • CTO • COO • CISO • Gestión de Proyectos • Arquitecto TI • Tech Lead",
+    "locations": "España • Ucrania • Kazajistán • China",
+    "summary": "Líder de TI con más de 20 años en FinTech, banca y bolsa. Experto en gobernanza de TI, seguridad, cloud y transformación digital. Lanzó plataformas de trading, banca y pagos en varios mercados.",
+    "key_skills": "Competencias clave",
+    "skills": ["Gobernanza TI y FinTech","Banca digital y trading","DevOps & CI/CD (K8s, Terraform, GitHub)","Cloud (AWS, Azure)","Seguridad y cumplimiento (ISO 27001/27032, GDPR, DORA, MiCA)","Agile, Lean Six Sigma","Backend e integraciones (C/Java/PHP/Python, APIs, microservicios)"],
+    "experience_title": "Experiencia",
+    "experience": [
+      {"role":"CIO, Comité Ejecutivo","company":"Astana International Exchange (AIX)","period":"2018–2024","bullets":["Primera bolsa 100% cloud en AWS.","Plataforma Nasdaq ME y BI.","Seguridad y compliance certificados ISO.","Trading y liquidación multimoneda."]},
+      {"role":"CTO & COO, Comité Ejecutivo","company":"MS Finance (China)","period":"2016–2018","bullets":["Lanzamiento fintech nacional (3000+ FTE).","Infraestructura cloud para servicios financieros.","Riesgo/score AI e integraciones WeChat/UnionPay."]},
+      {"role":"Miembro del Consejo / Head of BD","company":"Home Credit Bank (KZ)","period":"2013–2016","bullets":["Banca móvil y procesamiento propio de tarjetas.","PMO, Agile y Lean Six Sigma."]},
+      {"role":"CIO","company":"Home Credit Bank (UA & KZ)","period":"2003–2013","bullets":["Core banking, CRM, cobros, Call Center.","SWIFT/Reuters y centros de procesamiento seguros."]}
+    ],
+    "education_title":"Educación y certificaciones",
+    "education":["Automatización Industrial — USCTU","Mini-MBA — MCA Paris","CISM — ISACA","Lean Six Sigma","PMBOK","Miembro certificado del consejo (NBRK & CBRC)"]
+  },
+  "projects": {
+    "title":"Proyectos",
+    "lead":"Selección de trabajos en bolsa, banca y fintech.",
+    "role":"Rol",
+    "read_more":"Ver más",
+    "items": []
+  }
 }
