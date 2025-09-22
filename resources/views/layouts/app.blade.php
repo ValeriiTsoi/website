@@ -1,9 +1,35 @@
 <!doctype html>
 <html lang="{{ app()->getLocale() }}">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ config('app.name') }} — @yield('title','Home')</title>
-@vite(['resources/css/app.css','resources/js/app.js'])
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ config('app.name') }}  @yield('title','Home')</title>
+
+    @php
+        $manifestPath = public_path('build/manifest.json');
+        $cssHref = $jsSrc = null;
+
+        if (is_file($manifestPath)) {
+            $manifest = json_decode(file_get_contents($manifestPath), true);
+
+            //       entry-:
+            $cssFile = $manifest['resources/css/app.css']['file'] ?? null;
+            $jsFile  = $manifest['resources/js/app.js']['file']  ?? null;
+
+            if ($cssFile) $cssHref = "/build/{$cssFile}";
+            if ($jsFile)  $jsSrc  = "/build/{$jsFile}";
+        }
+    @endphp
+
+    @if($cssHref)
+        <link rel="preload" as="style" href="{{ $cssHref }}">
+        <link rel="stylesheet" href="{{ $cssHref }}">
+    @endif
+
+    @if($jsSrc)
+        <link rel="modulepreload" as="script" href="{{ $jsSrc }}">
+        <script type="module" src="{{ $jsSrc }}"></script>
+    @endif
 </head>
 <body class="antialiased text-neutral-800">
 @php
