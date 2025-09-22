@@ -2,10 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
+use App\Http\Middleware\SetLocale;
 
 Route::redirect('/', '/en', 302);
 
-Route::middleware(['setlocale'])->group(function () {
+Route::middleware([SetLocale::class])->group(function () {
     Route::prefix('{locale}')->where(['locale' => 'en|ua|es|ru|uk'])->group(function () {
         Route::get('/',         [PageController::class, 'home'])->name('home');
         Route::get('/about',    [PageController::class, 'about'])->name('about');
