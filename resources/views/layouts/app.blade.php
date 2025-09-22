@@ -20,8 +20,17 @@
     </div>
     <div class="flex items-center gap-1 ml-2">
       <img src="/images/icons/globe.svg" width="18" height="18" alt="" class="opacity-80">
-      @foreach (['en','uk','es','ru'] as $l)
-        <a class="px-1 {{ app()->getLocale()===$l ? 'font-semibold underline' : 'opacity-80 hover:opacity-100' }}" href="/{{ $l }}">{{ strtoupper($l) }}</a>
+      @php
+        $langs = [
+          ['code' => 'en', 'label' => 'EN'],
+          // Показываем метку UA, но ссылка ведёт на /uk чтобы не ломать Laravel-локаль
+          ['code' => 'uk', 'label' => 'UA'],
+          ['code' => 'es', 'label' => 'ES'],
+          ['code' => 'ru', 'label' => 'RU'],
+        ];
+      @endphp
+      @foreach ($langs as $L)
+        <a class="px-1 {{ app()->getLocale()===$L['code'] ? 'font-semibold underline' : 'opacity-80 hover:opacity-100' }}" href="/{{ $L['code'] }}">{{ $L['label'] }}</a>
       @endforeach
     </div>
   </nav>

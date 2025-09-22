@@ -4,6 +4,6 @@
 
 ## AIX Connect
 
-## Tabys APp
+## Tabys App
 ...
 
