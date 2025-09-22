@@ -1,1 +1,1 @@
-document.addEventListener('DOMContentLoaded',()=>{/* simple animated bg omitted for brevity (present in prior build) */});
+import '../css/app.css';
