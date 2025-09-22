@@ -1,43 +1,10 @@
 {
-  "nav": {
-    "about": "Про мене",
-    "projects": "Проєкти",
-    "hobby": "Хобі",
-    "contact": "Звʼязатися"
-  },
-  "slogan": {
-    "line1": "Shipлю фічі, не інциденти.",
-    "line2": "Cloud-native фінтех: security-by-design і compliance-by-default."
-  },
-  "home": {
-    "cta_projects": "Переглянути проєкти",
-    "cta_contact": "Написати мені",
-    "cards": {
-      "about": {
-        "title": "Про мене",
-        "text": "Досвід, навички та бекграунд."
-      },
-      "hobby": {
-        "title": "Хобі",
-        "text": "Подорожі, спорт, домашні улюбленці, розумний дім, радіоелектроніка."
-      }
-    }
-  },
-  "hobby": {
-    "travel": "Подорожі",
-    "sports": "Спорт",
-    "pets": "Домашні улюбленці",
-    "smarthome": "Розумний дім",
-    "radio": "Радіоелектроніка",
-    "soon": "Незабаром"
-  },
-  "contact": {
-    "intro": "Можете звʼязатися електронною поштою або через соцмережі."
-  },
-  "about": {
-    "placeholder": "Додайте контент резюме у resources/content/cv/about.md"
-  },
-  "projects": {
-    "placeholder": "Додайте проєкти з резюме у resources/content/cv/projects.md"
-  }
+  "nav.about": "Про мене",
+  "nav.projects": "Проєкти",
+  "nav.hobby": "Хобі",
+  "nav.contact": "Контакти",
+
+  "hero.title": "Shipлю фічі, не інциденти.",
+  "hero.subtitle": "Cloud-native фінтех: security-by-design і compliance-by-default.",
+  "hero.tagline": "Технології творять наше майбутнє, але не забувай про свою природу та індивідуальність."
 }
