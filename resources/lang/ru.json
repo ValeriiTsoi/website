@@ -1,0 +1,43 @@
+{
+  "nav": {
+    "about": "Обо мне",
+    "projects": "Проекты",
+    "hobby": "Хобби",
+    "contact": "Связаться"
+  },
+  "slogan": {
+    "line1": "Shipлю фичи, не инциденты.",
+    "line2": "Cloud-native финтех: security-by-design и compliance-by-default."
+  },
+  "home": {
+    "cta_projects": "Смотреть проекты",
+    "cta_contact": "Связаться",
+    "cards": {
+      "about": {
+        "title": "Обо мне",
+        "text": "Опыт, навыки и бэкграунд."
+      },
+      "hobby": {
+        "title": "Хобби",
+        "text": "Путешествия, спорт, питомцы, умный дом, радиоэлектроника."
+      }
+    }
+  },
+  "hobby": {
+    "travel": "Путешествия",
+    "sports": "Спорт",
+    "pets": "Домашние животные",
+    "smarthome": "Умный дом",
+    "radio": "Радиоэлектроника",
+    "soon": "Скоро будет"
+  },
+  "contact": {
+    "intro": "Можно написать на почту или в соцсети."
+  },
+  "about": {
+    "placeholder": "Добавьте содержание резюме в resources/content/cv/about.md"
+  },
+  "projects": {
+    "placeholder": "Добавьте проекты из резюме в resources/content/cv/projects.md"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "nav": {
+    "about": "About",
+    "projects": "Projects",
+    "hobby": "Hobby",
+    "contact": "Contact me"
+  },
+  "slogan": {
+    "line1": "Shipping features, not incidents.",
+    "line2": "Cloud-native FinTech with security-by-design and compliance-by-default."
+  },
+  "home": {
+    "cta_projects": "See projects",
+    "cta_contact": "Contact me",
+    "cards": {
+      "about": {
+        "title": "About me",
+        "text": "Experience, skills, and background."
+      },
+      "hobby": {
+        "title": "Hobby",
+        "text": "Travel, sports, pets, smart home, radio electronics."
+      }
+    }
+  },
+  "hobby": {
+    "travel": "Travel",
+    "sports": "Sports",
+    "pets": "Pets",
+    "smarthome": "Smart home",
+    "radio": "Radio electronics",
+    "soon": "Coming soon"
+  },
+  "contact": {
+    "intro": "You can reach me via e-mail or social networks."
+  },
+  "about": {
+    "placeholder": "Add your CV content to resources/content/cv/about.md"
+  },
+  "projects": {
+    "placeholder": "Add your CV projects to resources/content/cv/projects.md"
+  }
+}

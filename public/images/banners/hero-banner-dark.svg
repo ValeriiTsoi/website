@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="600" viewBox="0 0 1600 600">
+  <defs>
+    <linearGradient id="gd1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b1220"/><stop offset="1" stop-color="#0b1733"/></linearGradient>
+    <radialGradient id="dglow" cx="0.2" cy="0.1" r="0.8"><stop offset="0" stop-color="#60a5fa" stop-opacity="0.25"/><stop offset="1" stop-color="#60a5fa" stop-opacity="0"/></radialGradient>
+    <filter id="dblur"><feGaussianBlur stdDeviation="32"/></filter>
+    <linearGradient id="dwire" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#38bdf8" stop-opacity="0.25"/><stop offset="1" stop-color="#a78bfa" stop-opacity="0.25"/></linearGradient>
+  </defs>
+  <rect width="1600" height="600" fill="url(#gd1)"/>
+  <circle cx="300" cy="80" r="220" fill="url(#dglow)" filter="url(#dblur)"/>
+  <circle cx="1450" cy="560" r="260" fill="url(#dglow)" filter="url(#dblur)"/>
+  <path d="M0,500 C300,460 520,560 800,540 C1080,520 1300,600 1600,560 L1600,600 L0,600 Z" fill="#1f2937" fill-opacity="0.45"/>
+  <g stroke="url(#dwire)" stroke-width="2" fill="none" opacity="0.9">
+    <path d="M80 140 C200 170 260 100 380 110 S560 190 680 160 860 110 980 140 1200 220 1360 180"/>
+    <path d="M60 260 C220 260 280 200 420 220 S620 320 760 260 920 200 1040 240 1200 320 1440 300"/>
+  </g>
+  <g transform="translate(1150,140)" stroke="#93c5fd" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
+    <path d="M64 16l48 16v40c0 40-32 64-48 72-16-8-48-32-48-72V32l48-16z"/>
+    <rect x="52" y="56" width="24" height="20" rx="4"/><path d="M60 56v-6a12 12 0 0 1 24 0v6"/>
+  </g>
+</svg>

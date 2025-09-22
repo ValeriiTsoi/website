@@ -1,0 +1,43 @@
+{
+  "nav": {
+    "about": "Sobre mí",
+    "projects": "Proyectos",
+    "hobby": "Aficiones",
+    "contact": "Contacto"
+  },
+  "slogan": {
+    "line1": "Lanzo valor, no incidentes.",
+    "line2": "FinTech cloud-native con seguridad integrada y cumplimiento de serie."
+  },
+  "home": {
+    "cta_projects": "Ver proyectos",
+    "cta_contact": "Contactar",
+    "cards": {
+      "about": {
+        "title": "Sobre mí",
+        "text": "Experiencia, habilidades y trayectoria."
+      },
+      "hobby": {
+        "title": "Aficiones",
+        "text": "Viajes, deporte, mascotas, casa inteligente, radioelectrónica."
+      }
+    }
+  },
+  "hobby": {
+    "travel": "Viajes",
+    "sports": "Deporte",
+    "pets": "Mascotas",
+    "smarthome": "Domótica",
+    "radio": "Radioelectrónica",
+    "soon": "Próximamente"
+  },
+  "contact": {
+    "intro": "Puedes escribirme por correo o redes sociales."
+  },
+  "about": {
+    "placeholder": "Añade el contenido del CV a resources/content/cv/about.md"
+  },
+  "projects": {
+    "placeholder": "Añade los proyectos del CV a resources/content/cv/projects.md"
+  }
+}
