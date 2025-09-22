@@ -11,41 +11,35 @@
   if ($urlLocale === 'uk') { $urlLocale = 'ua'; }
 @endphp
 
-<header class="container mx-auto px-4 md:px-6 lg:px-8 py-5">
-  <nav class="grid grid-cols-3 items-center">
-    <div></div>
-    <ul class="justify-center flex items-center gap-6 md:gap-10 text-[15px] md:text-base">
-      <li><a href="/{{ $urlLocale }}/about" class="inline-flex items-center gap-3 hover:opacity-90">
-        <img src="/images/icons/about.svg" width="20" height="20" alt="">{{ __('nav.about') }}
-      </a></li>
-      <li><a href="/{{ $urlLocale }}/projects" class="inline-flex items-center gap-3 hover:opacity-90">
-        <img src="/images/icons/projects.svg" width="20" height="20" alt="">{{ __('nav.projects') }}
-      </a></li>
-      <li><a href="/{{ $urlLocale }}/hobby" class="inline-flex items-center gap-3 hover:opacity-90">
-        <img src="/images/icons/hobby.svg" width="20" height="20" alt="">{{ __('nav.hobby') }}
-      </a></li>
-      <li><a href="/{{ $urlLocale }}/contact" class="inline-flex items-center gap-3 hover:opacity-90">
-        <img src="/images/icons/contact.svg" width="20" height="20" alt="">{{ __('nav.contact') }}
-      </a></li>
+<header class="container mx-auto px-4">
+  <nav class="flex items-center justify-between py-4">
+    {{--  : / --}}
+    <a class="font-bold text-xl tracking-wide hover:opacity-80"
+       href="/{{ app()->getLocale() }}"
+       aria-label="Go to Home">VT</a>
+
+    {{-- :  ,   ,   --}}
+    <ul class="flex items-center gap-6 text-base">
+      <li><a class="hover:underline" href="/{{ app()->getLocale() }}/about">{{ __('nav.about') }}</a></li>
+      <li><a class="hover:underline" href="/{{ app()->getLocale() }}/projects">{{ __('nav.projects') }}</a></li>
+      <li><a class="hover:underline" href="/{{ app()->getLocale() }}/hobby">{{ __('nav.hobby') }}</a></li>
+      <li><a class="hover:underline" href="/{{ app()->getLocale() }}/contact">{{ __('nav.contact') }}</a></li>
+      <li class="ml-2">
+        <a class="hover:underline" href="https://linkedin.com/in/valerii-tsoi-a555859b" target="_blank" rel="noopener">LinkedIn</a>
+      </li>
+      <li>
+        <a class="hover:underline" href="https://github.com/ValeriiTsoi/website" target="_blank" rel="noopener">GitHub</a>
+      </li>
     </ul>
-    <div class="flex justify-end items-center">
-      <div class="flex items-center gap-2 sm:gap-3 bg-neutral-50 border border-neutral-200 rounded-full px-2 py-1">
-        @php
-          $langs = [
-            ['code' => 'en', 'label' => 'EN'],
-            ['code' => 'ua', 'label' => 'UA'],
-            ['code' => 'es', 'label' => 'ES'],
-            ['code' => 'ru', 'label' => 'RU'],
-          ];
-        @endphp
-        @foreach ($langs as $L)
-          <a class="px-2 md:px-3 py-1 rounded-full transition
-                    {{ $urlLocale===$L['code'] ? 'bg-white border border-neutral-200 font-semibold' : 'hover:bg-white/70' }}"
-             href="/{{ $L['code'] }}">
-            {{ $L['label'] }}
-          </a>
-        @endforeach
-      </div>
+
+    {{--  :  ,   --}}
+    <div class="flex items-center gap-3">
+      @foreach (['en','ua','es','ru'] as $l)
+        <a href="/{{ $l }}"
+           class="px-2 py-1 rounded {{ app()->getLocale()===$l ? 'underline font-semibold' : 'hover:underline' }}">
+          {{ strtoupper($l) }}
+        </a>
+      @endforeach
     </div>
   </nav>
 </header>
