@@ -39,24 +39,24 @@
 
 <header class="w-full">
   <div class="max-w-6xl mx-auto flex items-center justify-between py-4 px-4">
-    <!-- : VT -->
+    <!--  /    -->
     <a class="text-xl font-bold tracking-tight text-neutral-900 dark:text-white" href="/{{ app()->getLocale() }}">VT</a>
 
-    <!-- :     +   -->
-    <nav class="hidden md:flex items-center gap-6 text-sm">
-      <a href="/{{ app()->getLocale() }}/about"    class="inline-flex items-center gap-2 hover:opacity-80">@svg('user'){{ __('nav.about') }}</a>
-      <a href="/{{ app()->getLocale() }}/projects" class="inline-flex items-center gap-2 hover:opacity-80">@svg('code'){{ __('nav.projects') }}</a>
-      <a href="/{{ app()->getLocale() }}/hobby"    class="inline-flex items-center gap-2 hover:opacity-80">@svg('heart'){{ __('nav.hobby') }}</a>
-      <a href="/{{ app()->getLocale() }}/contact"  class="inline-flex items-center gap-2 hover:opacity-80">@svg('mail'){{ __('nav.contact') }}</a>
-      <a href="https://linkedin.com/in/valerii-tsoi-a555859b" target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:opacity-80">@svg('linkedin')LinkedIn</a>
-      <a href="https://github.com/ValeriiTsoi/website" target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:opacity-80">@svg('github')GitHub</a>
+    <!--  :  +   -->
+    <nav class="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-sm">
+      <a href="/{{ app()->getLocale() }}/about"    class="inline-flex items-center gap-2 hover:opacity-80">@svg('user') {{ __('nav.about') }}</a>
+      <a href="/{{ app()->getLocale() }}/projects" class="inline-flex items-center gap-2 hover:opacity-80">@svg('code') {{ __('nav.projects') }}</a>
+      <a href="/{{ app()->getLocale() }}/hobby"    class="inline-flex items-center gap-2 hover:opacity-80">@svg('heart') {{ __('nav.hobby') }}</a>
+      <a href="/{{ app()->getLocale() }}/contact"  class="inline-flex items-center gap-2 hover:opacity-80">@svg('mail') {{ __('nav.contact') }}</a>
+      <a href="https://linkedin.com/in/valerii-tsoi-a555859b" target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:opacity-80">@svg('linkedin') LinkedIn</a>
+      <a href="https://github.com/ValeriiTsoi/website" target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:opacity-80">@svg('github') GitHub</a>
     </nav>
 
-    <!-- :     gap -->
+    <!--  : ,   -->
     <div class="flex items-center gap-3 md:gap-4 text-xs md:text-sm">
-      @foreach (['en'=>'EN','ua'=>'UA','es'=>'ES','ru'=>'RU'] as $l => $label)
-        <a class="{{ app()->getLocale()===$l ? 'font-semibold underline' : 'opacity-80 hover:opacity-100' }}"
-           href="/{{ $l }}">{{ $label }}</a>
+      @foreach (['en'=>'EN','ua'=>'UA','es'=>'ES','ru'=>'RU'] as $code=>$label)
+        <a class="{{ app()->getLocale()===$code ? 'font-semibold underline' : 'opacity-80 hover:opacity-100' }}"
+           href="/{{ $code }}">{{ $label }}</a>
       @endforeach
     </div>
   </div>
