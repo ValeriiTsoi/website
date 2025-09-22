@@ -63,7 +63,6 @@
 </header>
 
 <main class="container mx-auto px-0 md:px-0 lg:px-0">@yield('content')</main>
-
 <footer class="container mx-auto px-4 md:px-6 lg:px-8 py-10 text-sm text-neutral-500">
   © {{ date('Y') }} Valerii Tsoi
 </footer>
