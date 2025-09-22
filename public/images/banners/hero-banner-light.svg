@@ -3,23 +3,10 @@
     <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0ea5e9"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient>
     <radialGradient id="glow" cx="0.2" cy="0.1" r="0.8"><stop offset="0" stop-color="#ffffff" stop-opacity="0.7"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
     <filter id="blur30"><feGaussianBlur stdDeviation="30"/></filter>
-    <linearGradient id="grid" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b3b66" stop-opacity="0.05"/><stop offset="1" stop-color="#0b3b66" stop-opacity="0.02"/></linearGradient>
   </defs>
   <rect width="1600" height="600" fill="url(#g1)"/>
   <circle cx="260" cy="80" r="220" fill="url(#glow)" filter="url(#blur30)"/>
   <circle cx="1450" cy="560" r="260" fill="url(#glow)" filter="url(#blur30)"/>
   <path d="M0,480 C300,420 500,560 800,520 C1100,480 1300,560 1600,520 L1600,600 L0,600 Z" fill="#ffffff" fill-opacity="0.10"/>
   <path d="M0,520 C300,480 500,600 800,560 C1100,520 1300,600 1600,560 L1600,600 L0,600 Z" fill="#ffffff" fill-opacity="0.06"/>
-  <g stroke="url(#grid)" stroke-width="1">
-    <g><path d="M100 0 V600"/><path d="M200 0 V600"/><path d="M300 0 V600"/><path d="M400 0 V600"/><path d="M500 0 V600"/><path d="M600 0 V600"/><path d="M700 0 V600"/><path d="M800 0 V600"/><path d="M900 0 V600"/><path d="M1000 0 V600"/><path d="M1100 0 V600"/><path d="M1200 0 V600"/><path d="M1300 0 V600"/><path d="M1400 0 V600"/><path d="M1500 0 V600"/></g>
-    <g><path d="M0 80 H1600"/><path d="M0 160 H1600"/><path d="M0 240 H1600"/><path d="M0 320 H1600"/><path d="M0 400 H1600"/><path d="M0 480 H1600"/></g>
-  </g>
-  <g transform="translate(1100,120)" opacity="0.9" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M40 80c0-18 14-32 32-32 5 0 10 1 14 3 6-19 24-33 45-33 26 0 48 21 48 48 0 3 0 5-1 8 18 2 32 17 32 36 0 20-16 36-36 36H58c-20 0-36-16-36-36 0-14 8-26 18-31z" opacity="0.8"/>
-    <rect x="84" y="72" width="64" height="48" rx="8"/><path d="M100 72v-12a20 20 0 0 1 40 0v12"/><circle cx="116" cy="96" r="4"/><path d="M116 100v8"/><path d="M28 128l10 10 18-22"/>
-  </g>
-  <g transform="translate(140,180)" stroke="#fff" stroke-opacity="0.85" fill="none">
-    <polyline points="0,160 120,120 220,180 320,100 440,140 560,80 640,100 740,60" stroke-width="3" />
-    <g fill="#fff"><circle cx="0" cy="160" r="3"/><circle cx="120" cy="120" r="3"/><circle cx="220" cy="180" r="3"/><circle cx="320" cy="100" r="3"/><circle cx="440" cy="140" r="3"/><circle cx="560" cy="80"  r="3"/><circle cx="640" cy="100" r="3"/><circle cx="740" cy="60"  r="3"/></g>
-  </g>
 </svg>
