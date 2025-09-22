@@ -4,39 +4,26 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\URL;
 
 class SetLocale
 {
+    /** @var string[] */
+    private array $supported = ['en','ua','es','ru'];
+
     public function handle(Request $request, Closure $next)
     {
-        // URL-   {locale}
         $urlLocale = $request->route('locale');
-        $supported = ['en','ua','es','ru','uk'];
 
-        //   / ->   /en + 
-        if (!$urlLocale || !in_array($urlLocale, $supported, true)) {
-            $default = 'en';
-            $segments = $request->segments();
-            array_unshift($segments, $default);
-            return redirect('/' . implode('/', $segments), 302);
+        // :   URL -     en
+        if (!in_array($urlLocale, $this->supported, true)) {
+            $urlLocale = 'en';
         }
 
-        // : /uk/...  /ua/...
-        if ($urlLocale === 'uk') {
-            $segments = $request->segments();
-            $segments[0] = 'ua';
-            return redirect('/' . implode('/', $segments), 301);
-        }
-
-        //       'uk'
-        $internal = $urlLocale === 'ua' ? 'uk' : $urlLocale;
-
-        App::setLocale($internal);
-
-        //  route()/url()   URL-
-        URL::defaults(['locale' => $urlLocale]);
+        // IMPORTANT:
+        // - URL  /ua
+        // -  Laravel locale   ua,    uk.
+        //   JSON-  resources/lang/ua.json   'ua'.
+        app()->setLocale($urlLocale);
 
         return $next($request);
     }
