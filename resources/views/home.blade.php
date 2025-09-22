@@ -6,8 +6,10 @@
 <section class="container mx-auto px-4 py-16">
   <div class="grid md:grid-cols-2 gap-10 items-center">
     <div>
-      <img src="/images/hero/hero-banner-light.svg" alt="Hero banner" class="hidden dark:block w-full max-w-2xl">
-      <img src="/images/hero/hero-banner-dark.svg"  alt="Hero banner" class="block dark:hidden w-full max-w-2xl">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="{{ asset('images/hero/hero-banner-dark.svg') }}">
+        <img src="{{ asset('images/hero/hero-banner-light.svg') }}" alt="Hero banner" loading="eager" decoding="async">
+      </picture>
     </div>
     <div class="text-right">
       <h1 class="text-3xl md:text-4xl font-bold leading-snug">{{ __('hero.title') }}</h1>
